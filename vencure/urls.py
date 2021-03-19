@@ -20,5 +20,6 @@ from django.conf import settings
 
 urlpatterns = [
     path("api/auth/", include("account.urls")),
+    path("api/vendor/", include("vendor.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

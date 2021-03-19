@@ -12,7 +12,7 @@ class MyAccountManager(BaseUserManager):
 
         user.set_password(password)
         user.is_staff = False
-        user.is_verified = False
+        user.is_verified = True
         user.is_superuser = False
         user.save(using=self._db)
         return user

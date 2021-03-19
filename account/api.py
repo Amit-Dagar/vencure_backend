@@ -5,7 +5,8 @@ from rest_framework.generics import (
 from .serializers import (
     AdminLoginSerializer,
     VendorLoginSerializer,
-    VendorSignupSerializer
+    VendorSignupSerializer,
+    authenticate
 )
 from .models import User
 from helper import helper
@@ -35,7 +36,6 @@ class AdminLogin(GenericAPIView):
         )
 
 
-
 # Vendor Login API
 # post
 # params - email, password
@@ -60,7 +60,6 @@ class VendorLogin(GenericAPIView):
         )
 
 
-
 # Update Password API
 # post
 # params - old_password, new_password
@@ -74,7 +73,7 @@ class UpdatePassword(CreateAPIView):
 
         user = authenticate(
             **{
-                "username": request.user.username,
+                "email": request.user.email,
                 "password": request.data["old_password"],
             }
         )
@@ -85,4 +84,3 @@ class UpdatePassword(CreateAPIView):
             return helper.createResponse(helper.message.CHANGE_PASSWORD_SUCCESS)
         else:
             return helper.createResponse(helper.message.PASSWORD_MISMATCH)
-
