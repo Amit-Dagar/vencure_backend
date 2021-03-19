@@ -1,3 +1,16 @@
+def MODULE_STORE_SUCCESS(module):
+    return module + " has been added successfully !"
+
+
+def MODULE_NOT_FOUND(module):
+    return "No " + module + " found."
+
+
+# All delete(destroy/status change) method messages
+def MODULE_STATUS_CHANGE(module, status):
+    return module + " has been " + status + " successfully!"
+
+
 LOGIN_SUCCESS = "Login Successful! redirecting..."
 CHANGE_PASSWORD_SUCCESS = "Your password has been changed successfully."
 PASSWORD_MISMATCH = "Incorrect old password."

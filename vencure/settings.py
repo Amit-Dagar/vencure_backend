@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'account',
     'vendor',
     'products',
+    'agreements',
     'helper',
     'rest_framework',
     'rest_framework_jwt',
