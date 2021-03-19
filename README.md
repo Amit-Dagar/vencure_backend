@@ -6,7 +6,7 @@ by automating their conventional way of communication/negotiation.
 **Manufacturer Panel Features :**
 
 1. Ability to Add/Manage As Many Vendors As Requrired
-2. Ability to Create/Manage a Product/RFP to Display to All Vendors
+2. Ability to Create/Manage/Search a Product/RFP to Display to All Vendors
 3. Ability to View Agreements with Filters (Like Expiring within 15 days)
 4. Ability to Manage Agreements (Like Counter Offer the Agreement)
 5. Ability to View Status on Agreements
