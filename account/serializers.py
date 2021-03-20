@@ -27,11 +27,13 @@ class VendorLoginSerializer(Serializer):
 
     def validate(self, data):
         user = authenticate(**data)
-        if user and user.is_active and user.is_verified:
+        if user == None:
+            raise helper.exception.AuthenticationFailed()
+        elif user and user.is_active and user.is_verified:
             return user
-        elif not user.is_verified:
+        else:
             raise helper.exception.ParseError(helper.message.ACCOUNT_BLOCKED)
-        raise helper.exception.AuthenticationFailed()
+
 
 # Vendor Signup Serializer
 

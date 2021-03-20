@@ -71,7 +71,7 @@ class ReadVendors(ListAPIView):
         if "search" in request.GET:
             vendors = User.objects.filter(
                 email__icontains=request.GET["search"], is_superuser=False
-            ).order_by('created').reverse()
+            ).order_by('date_joined').reverse()
         else:
             vendors = User.objects.filter(is_superuser=False).order_by(
                 'date_joined').reverse()
