@@ -30,5 +30,8 @@ class Agreements(models.Model):
     status = models.IntegerField(default=1)
     description = models.TextField(blank=True, null=True)
     attachment = models.FileField(storage=FileSystemStorage(
-        location=helper.settings.MEDIA_ROOT), upload_to='agreements')
+        location=helper.settings.MEDIA_ROOT), blank=True, null=True, upload_to='agreements')
     created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "agreements"

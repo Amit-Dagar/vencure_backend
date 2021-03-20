@@ -16,7 +16,7 @@ CHANGE_PASSWORD_SUCCESS = "Your password has been changed successfully."
 PASSWORD_MISMATCH = "Incorrect old password."
 USER_EMAIL_EXISTS = "Email already exists."
 RESET_PASSWORD_SUCCESS = "Password reset request has been processed successfully."
-
+ACCOUNT_BLOCKED = "Your account has been blocked by manufacturer"
 # Vendor
 VENDOR_CREATED = "Vendor has been created successfully."
 

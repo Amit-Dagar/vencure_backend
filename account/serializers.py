@@ -12,30 +12,37 @@ from helper import helper
 class AdminLoginSerializer(Serializer):
     email = CharField()
     password = CharField()
+
     def validate(self, data):
         user = authenticate(**data)
         if user and user.is_superuser:
             return user
         raise helper.exception.AuthenticationFailed()
-    
+
 
 # Vendor login serializer
 class VendorLoginSerializer(Serializer):
     email = CharField()
     password = CharField()
+
     def validate(self, data):
         user = authenticate(**data)
         if user and user.is_active and user.is_verified:
             return user
+        elif not user.is_verified:
+            raise helper.exception.ParseError(helper.message.ACCOUNT_BLOCKED)
         raise helper.exception.AuthenticationFailed()
 
 # Vendor Signup Serializer
+
+
 class VendorSignupSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'name', 'password', 'is_verified', 'is_active')
+        fields = ('id', 'email', 'name', 'password',
+                  'is_verified', 'is_active')
         extra_kwargs = {'password': {'write_only': True}}
-    
+
     def create(self, data):
         user = User.objects.create_user(**data)
         return user
