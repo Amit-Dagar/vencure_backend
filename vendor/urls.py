@@ -4,7 +4,8 @@ from .api import (
     UpdateVendorPassword,
     ReadVendors,
     VendorStatus,
-    AdminDashboard
+    AdminDashboard,
+    VendorDashboard
 )
 
 
@@ -14,4 +15,5 @@ urlpatterns = [
     path('update_vendor/<str:id>', VendorStatus.as_view()),
     path('update_password/<str:id>', UpdateVendorPassword.as_view()),
     path('adminDashboard', AdminDashboard.as_view()),
+    path('vendorDashboard', VendorDashboard.as_view()),
 ]

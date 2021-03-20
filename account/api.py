@@ -83,4 +83,4 @@ class UpdatePassword(CreateAPIView):
             user.save()
             return helper.createResponse(helper.message.CHANGE_PASSWORD_SUCCESS)
         else:
-            return helper.createResponse(helper.message.PASSWORD_MISMATCH)
+            raise helper.exception.ParseError(helper.message.PASSWORD_MISMATCH)

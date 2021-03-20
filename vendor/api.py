@@ -120,7 +120,6 @@ class AdminDashboard(ListAPIView):
         products = Product.objects.filter().count()
 
         # Agreements
-        print(helper.datetime.now().date()-helper.timedelta(15))
         running_agreements = Agreements.objects.filter(status=2).count()
         expiring_agreements = Agreements.objects.filter(
             end_date__gte=helper.datetime.now().date()-helper.timedelta(15), status=2).count()
@@ -141,5 +140,33 @@ class AdminDashboard(ListAPIView):
                 "counter_agreements": counter_agreements,
                 "agreements": agreements,
                 "vendors": vendors
+            }
+        )
+
+
+# VENDOR DASHBOARD
+# GET
+# params -
+# /api/vendor/vendorDashboard
+class VendorDashboard(ListAPIView):
+    permission_classes = [helper.permission.IsAuthenticated]
+    http_method_names = ['get']
+
+    def list(self, request):
+        running_agreements = Agreements.objects.filter(
+            vendor=request.user, status=2).count()
+        expiring_agreements = Agreements.objects.filter(vendor=request.user,
+                                                        end_date__gte=helper.datetime.now().date()-helper.timedelta(15), status=2).count()
+        counter_agreements = Agreements.objects.filter(
+            vendor=request.user, status=3).count()
+        agreements = Agreements.objects.filter(vendor=request.user).count()
+
+        return helper.createResponse(
+            helper.message.MODULE_LIST('Dashboard'),
+            {
+                "running_agreements": running_agreements,
+                "expiring_agreements": expiring_agreements,
+                "counter_agreements": counter_agreements,
+                "agreements": agreements
             }
         )

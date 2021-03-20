@@ -5,7 +5,8 @@ from rest_framework.generics import (
     UpdateAPIView
 )
 from .serializers import (
-    ProductSerializer
+    ProductSerializer,
+    VendorProductSerializer
 )
 from rest_framework.pagination import PageNumberPagination
 from .models import Product
@@ -47,18 +48,32 @@ class Read(ListAPIView):
         paginator = PageNumberPagination()
         paginator.page_size = helper.settings.PAGE_SIZE
 
-        if "search" in request.GET:
-            products = Product.objects.filter(
-                name__icontains=request.GET["search"]
-            ).order_by('created').reverse()
+        if request.user.is_superuser:
+            if "search" in request.GET:
+                products = Product.objects.filter(
+                    name__icontains=request.GET["search"]).order_by('created').reverse()
+            else:
+                products = Product.objects.all().order_by('created').reverse()
+
+            page_context = paginator.paginate_queryset(products, request)
+            data = paginator.get_paginated_response(
+                ProductSerializer(page_context, many=True).data
+            )
         else:
-            products = Product.objects.all().order_by('created').reverse()
+            if "search" in request.GET:
+                products = Product.objects.filter(
+                    name__icontains=request.GET["search"], is_visible=True).order_by('created').reverse()
+            else:
+                products = Product.objects.filter(
+                    is_visible=True).order_by('created').reverse()
 
-        page_context = paginator.paginate_queryset(products, request)
+            page_context = paginator.paginate_queryset(products, request)
+            data = paginator.get_paginated_response(
+                VendorProductSerializer(page_context, context={
+                                  'request': request}, many=True).data
+            )
 
-        return paginator.get_paginated_response(
-            ProductSerializer(page_context, many=True).data
-        )
+        return data
 
 
 # UPDATE PRODUCT
