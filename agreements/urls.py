@@ -7,13 +7,15 @@ from .api import (
     SetAgreementToCounter,
     UpdateAgreementCounterPrice,
     RejectAgreement,
-    RejectAgreementCounter
+    RejectAgreementCounter,
+    ReadExpiringSoonAgreements
 )
 
 
 urlpatterns = [
     path('create/<str:id>', CreateAgreement.as_view()),
     path('read', ReadAgreements.as_view()),
+    path('readExpiringSoon', ReadExpiringSoonAgreements.as_view()),
     path('accept/<str:id>', AcceptAgreement.as_view()),
     path('accept_counter/<str:id>', AcceptAgreementCounter.as_view()),
 

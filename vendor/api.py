@@ -122,7 +122,7 @@ class AdminDashboard(ListAPIView):
         # Agreements
         running_agreements = Agreements.objects.filter(status=2).count()
         expiring_agreements = Agreements.objects.filter(
-            end_date__gte=helper.datetime.now().date()-helper.timedelta(15), status=2).count()
+            end_date__lte=helper.datetime.now().date()+helper.timedelta(15), end_date__gte=helper.datetime.now(), status=2).count()
         counter_agreements = Agreements.objects.filter(status=3).count()
         agreements = Agreements.objects.filter().count()
 
@@ -156,7 +156,7 @@ class VendorDashboard(ListAPIView):
         running_agreements = Agreements.objects.filter(
             vendor=request.user, status=2).count()
         expiring_agreements = Agreements.objects.filter(vendor=request.user,
-                                                        end_date__gte=helper.datetime.now().date()-helper.timedelta(15), status=2).count()
+                                                        end_date__lte=helper.datetime.now().date()+helper.timedelta(15), end_date__gte=helper.datetime.now(), status=2).count()
         counter_agreements = Agreements.objects.filter(
             vendor=request.user, status=3).count()
         agreements = Agreements.objects.filter(vendor=request.user).count()

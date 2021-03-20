@@ -66,31 +66,72 @@ class ReadAgreements(ListAPIView):
         if request.user.is_superuser:
             if "search" in request.GET:
                 if "filter" in request.GET and request.GET['filter'] != '':
-                    agrements = Agreements.objects.filter(
-                        product__name__icontains=request.GET['search'], status=request.GET['filter'])
+                    if request.GET['filter'] == 'expiring_soon':
+                        agrements = Agreements.objects.filter(
+                            end_date__lte=helper.datetime.now().date()+helper.timedelta(15), end_date__gte=helper.datetime.now(), product__name__icontains=request.GET['search'])
+                    else:
+                        agrements = Agreements.objects.filter(
+                            product__name__icontains=request.GET['search'], status=request.GET['filter'])
                 else:
                     agrements = Agreements.objects.filter(
                         product__name__icontains=request.GET['search'])
             else:
                 if "filter" in request.GET and request.GET['filter'] != '':
-                    agrements = Agreements.objects.filter(
-                        status=request.GET['filter'])
+                    if request.GET['filter'] == 'expiring_soon':
+                        agrements = Agreements.objects.filter(
+                            end_date__lte=helper.datetime.now().date()+helper.timedelta(15), end_date__gte=helper.datetime.now())
+                    else:
+                        agrements = Agreements.objects.filter(
+                            status=request.GET['filter'])
                 else:
                     agrements = Agreements.objects.all()
         else:
             if "search" in request.GET:
                 if "filter" in request.GET and request.GET['filter'] != '':
-                    agrements = Agreements.objects.filter(vendor=request.user,
-                                                          product__name__icontains=request.GET['search'], status=request.GET['filter'])
+                    if request.GET['filter'] == 'expiring_soon':
+                        agrements = Agreements.objects.filter(vendor=request.user,
+                                                              end_date__lte=helper.datetime.now().date()+helper.timedelta(15), end_date__gte=helper.datetime.now(), product__name__icontains=request.GET['search'])
+                    else:
+                        agrements = Agreements.objects.filter(vendor=request.user,
+                                                              product__name__icontains=request.GET['search'], status=request.GET['filter'])
                 else:
                     agrements = Agreements.objects.filter(vendor=request.user,
                                                           product__name__icontains=request.GET['search'])
             else:
                 if "filter" in request.GET and request.GET['filter'] != '':
-                    agrements = Agreements.objects.filter(
-                        vendor=request.user, status=request.GET['filter'])
+                    if request.GET['filter'] == 'expiring_soon':
+                        agrements = Agreements.objects.filter(vendor=request.user,
+                                                              end_date__lte=helper.datetime.now().date()+helper.timedelta(15), end_date__gte=helper.datetime.now())
+                    else:
+                        agrements = Agreements.objects.filter(
+                            vendor=request.user, status=request.GET['filter'])
                 else:
                     agrements = Agreements.objects.filter(vendor=request.user)
+
+        page_context = paginator.paginate_queryset(agrements, request)
+
+        return paginator.get_paginated_response(
+            ReadAgreementSerializer(page_context, many=True).data
+        )
+
+
+# READ AGREEMENTS
+# GET
+# PARAMS - &search=?&filter=?
+# /api/agreement/readExpiringSoon
+class ReadExpiringSoonAgreements(ListAPIView):
+    permission_classes = [helper.permission.IsAuthenticated]
+
+    def list(self, request):
+        paginator = PageNumberPagination()
+        paginator.page_size = helper.settings.PAGE_SIZE
+
+        if request.user.is_superuser:
+            agrements = Agreements.objects.filter(
+                end_date__lte=helper.datetime.now().date()+helper.timedelta(15), end_date__gte=helper.datetime.now())
+        else:
+            agrements = Agreements.objects.filter(vendor=request.user,
+                                                  end_date__lte=helper.datetime.now().date()+helper.timedelta(15), end_date__gte=helper.datetime.now())
 
         page_context = paginator.paginate_queryset(agrements, request)
 
