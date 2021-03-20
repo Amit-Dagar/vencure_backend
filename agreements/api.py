@@ -65,30 +65,30 @@ class ReadAgreements(ListAPIView):
 
         if request.user.is_superuser:
             if "search" in request.GET:
-                if "filter" in request.GET:
+                if "filter" in request.GET and request.GET['filter'] != '':
                     agrements = Agreements.objects.filter(
-                        product__name__icontains=request.GET['search'], status=int(request.GET['filter']))
+                        product__name__icontains=request.GET['search'], status=request.GET['filter'])
                 else:
                     agrements = Agreements.objects.filter(
                         product__name__icontains=request.GET['search'])
             else:
-                if "filter" in request.GET:
+                if "filter" in request.GET and request.GET['filter'] != '':
                     agrements = Agreements.objects.filter(
-                        status=int(request.GET['filter']))
+                        status=request.GET['filter'])
                 else:
                     agrements = Agreements.objects.all()
         else:
             if "search" in request.GET:
-                if "filter" in request.GET:
+                if "filter" in request.GET and request.GET['filter'] != '':
                     agrements = Agreements.objects.filter(vendor=request.user,
-                                                          product__name__icontains=request.GET['search'], status=int(request.GET['filter']))
+                                                          product__name__icontains=request.GET['search'], status=request.GET['filter'])
                 else:
                     agrements = Agreements.objects.filter(vendor=request.user,
                                                           product__name__icontains=request.GET['search'])
             else:
-                if "filter" in request.GET:
+                if "filter" in request.GET and request.GET['filter'] != '':
                     agrements = Agreements.objects.filter(
-                        vendor=request.user, status=int(request.GET['filter']))
+                        vendor=request.user, status=request.GET['filter'])
                 else:
                     agrements = Agreements.objects.filter(vendor=request.user)
 
@@ -107,7 +107,7 @@ class SetAgreementToCounter(CreateAPIView):
     permission_classes = [helper.permission.IsAdmin]
 
     def post(self, request, id):
-        helper.check_parameters(request.data, ['price'])
+        helper.check_parameters(request.data, ['price', 'description'])
         try:
             agreement = Agreements.objects.get(id=id)
         except Exception as e:
@@ -116,6 +116,7 @@ class SetAgreementToCounter(CreateAPIView):
 
         # 2 = Running/Accept
         agreement.price = request.data['price']
+        agreement.description = request.data['description']
         agreement.status = 3
         agreement.save()
 
@@ -198,7 +199,7 @@ class RejectAgreement(CreateAPIView):
 
     def post(self, request, id):
         try:
-            agreement = Agreements.objects.get(id=id, status=3)
+            agreement = Agreements.objects.get(id=id)
         except Exception as e:
             raise helper.exception.ParseError(
                 helper.message.MODULE_NOT_FOUND('Agreement'))
