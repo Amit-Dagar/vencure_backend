@@ -6,6 +6,10 @@ def MODULE_NOT_FOUND(module):
     return "No " + module + " found."
 
 
+def MODULE_LIST(module):
+    return module + " list."
+
+
 # All delete(destroy/status change) method messages
 def MODULE_STATUS_CHANGE(module, status):
     return module + " has been " + status + " successfully!"

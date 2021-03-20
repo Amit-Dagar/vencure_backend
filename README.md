@@ -3,6 +3,8 @@
 Team FlameCloud is coding a two-panel based platform with Vendors and Manufacturers
 by automating their conventional way of communication/negotiation.
 
+Landing Page Design : https://www.figma.com/file/fPZ7v7aJVuyzEUglmxd3AU/Untitled?node-id=0%3A1
+
 **Manufacturer Panel Features :**
 
 1. Ability to Add/Manage As Many Vendors As Requrired

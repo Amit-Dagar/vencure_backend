@@ -6,6 +6,8 @@ from rest_framework.generics import (
 )
 from rest_framework.pagination import PageNumberPagination
 from account.serializers import VendorSignupSerializer, User
+from agreements.models import Agreements
+from products.models import Product
 from .serializers import VendorSerializer
 from helper import helper
 
@@ -101,3 +103,43 @@ class VendorStatus(CreateAPIView):
         user.save()
 
         return helper.createResponse(helper.message.MODULE_STATUS_CHANGE('Vendor status', 'updated'))
+
+
+# ADMIN DASHBOARD
+# GET
+# params -
+# /api/vendor/adminDashboard
+class AdminDashboard(ListAPIView):
+    permission_classes = [helper.permission.IsAdmin]
+    http_method_names = ['get']
+
+    def list(self, request):
+        # Products
+        live_products = Product.objects.filter(is_visible=True).count()
+        offline_products = Product.objects.filter(is_visible=False).count()
+        products = Product.objects.filter().count()
+
+        # Agreements
+        print(helper.datetime.now().date()-helper.timedelta(15))
+        running_agreements = Agreements.objects.filter(status=2).count()
+        expiring_agreements = Agreements.objects.filter(
+            end_date__gte=helper.datetime.now().date()-helper.timedelta(15), status=2).count()
+        counter_agreements = Agreements.objects.filter(status=3).count()
+        agreements = Agreements.objects.filter().count()
+
+        # vendors
+        vendors = User.objects.filter(is_superuser=False).count()
+
+        return helper.createResponse(
+            helper.message.MODULE_LIST('Dashboard'),
+            {
+                "live_products": live_products,
+                "offline_products": offline_products,
+                "products": products,
+                "running_agreements": running_agreements,
+                "expiring_agreements": expiring_agreements,
+                "counter_agreements": counter_agreements,
+                "agreements": agreements,
+                "vendors": vendors
+            }
+        )
